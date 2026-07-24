@@ -1,0 +1,101 @@
+// Prisma Schema — 从 SQLAlchemy 模型迁移
+// 文档: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// 数据源枚举
+enum DataSource {
+  hackernews
+  reddit
+  stackoverflow
+  zhihu
+  xiaohongshu
+  weibo
+  douyin
+  bilibili
+}
+
+// 证据类型枚举
+enum EvidenceType {
+  complaint
+  help_seeking
+  missing
+  comparison
+}
+
+/// 从数据源采集的原始帖子
+model RawPost {
+  id          String       @id @default(uuid())
+  source      DataSource
+  externalId  String
+  title       String?
+  body        String?
+  url         String?
+  author      String?
+  score       Int          @default(0)
+  numComments Int          @default(0)
+  language    String       @default("en")
+  publishedAt  DateTime?
+  fetchedAt    DateTime     @default(now())
+  processedAt  DateTime?
+
+  demandCards  DemandCard[]
+
+  @@index([source])
+  @@index([publishedAt])
+  @@unique([source, externalId])
+}
+
+/// LLM 从原始帖子中抽取的结构化需求卡片
+model DemandCard {
+  id                 String       @id @default(uuid())
+  rawPostId          String?
+  rawPost            RawPost?     @relation(fields: [rawPostId], references: [id])
+
+  domain             String
+  subDomain          String?
+  persona            String?
+  painPoint          String
+  desiredOutcome     String?
+  currentAlternative String?
+  evidenceType       EvidenceType @default(complaint)
+  intensity          Int          @default(5)
+  mentionedTools     String       @default("[]")
+
+  source      DataSource
+  url         String?
+  publishedAt DateTime?
+
+  frequencyScore    Float @default(1.0)
+  recencyScore      Float @default(0.0)
+  marketScore       Float @default(0.0)
+  competitionScore  Float @default(0.0)
+  overallScore      Float @default(0.0)
+
+  createdAt DateTime @default(now())
+
+  @@index([domain])
+  @@index([source])
+  @@index([publishedAt])
+  @@index([overallScore])
+}
+
+/// 采集批次记录
+model CollectionRun {
+  id              String   @id @default(uuid())
+  source          DataSource
+  status          String   @default("pending")
+  postsCollected  Int      @default(0)
+  cardsExtracted  Int      @default(0)
+  errorMessage    String?
+  startedAt       DateTime @default(now())
+  finishedAt      DateTime?
+}
