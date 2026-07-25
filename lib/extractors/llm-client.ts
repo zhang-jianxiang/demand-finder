@@ -8,7 +8,7 @@ import OpenAI from "openai";
 import { config } from "@/lib/config";
 
 const PROVIDER_PRESETS: Record<string, { baseUrl: string; model: string }> = {
-  deepseek: { baseUrl: "https://api.deepseek.com/v1", model: "deepseek-chat" },
+  deepseek: { baseUrl: "https://api.deepseek.com/v1", model: "deepseek-v4-flash" },
   qwen: { baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1", model: "qwen-plus" },
   openai: { baseUrl: "https://api.openai.com/v1", model: "gpt-4o-mini" },
 };
