@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     ]) {
       try {
         console.log(`[Cron] 采集 ${source}...`);
-        const posts = await collector(20);
+        const posts = await collector(10);
 
         if (posts.length > 0) {
           // 网页正文富化
@@ -109,7 +109,7 @@ export async function GET(request: Request) {
 
       const rawPosts = await prisma.rawPost.findMany({
         where: { processedAt: null },
-        take: 10,
+        take: 5,
         orderBy: { score: "desc" },
       });
 

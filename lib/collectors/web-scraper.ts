@@ -8,11 +8,15 @@ import * as cheerio from "cheerio";
 import type { CollectedPost } from "./types";
 
 const SKIP_DOMAINS = new Set([
-  "twitter.com", "x.com", "facebook.com", "instagram.com",
-  "youtube.com", "youtu.be", "tiktok.com", "linkedin.com",
-  "news.ycombinator.com",
-  "github.com",
-  "reddit.com", "old.reddit.com", "www.reddit.com",
+"twitter.com", "x.com", "facebook.com", "instagram.com",
+"youtube.com", "youtu.be", "tiktok.com", "linkedin.com",
+"news.ycombinator.com",
+"github.com",
+"reddit.com", "old.reddit.com", "www.reddit.com",
+"xiaohongshu.com", "www.xiaohongshu.com",  // API 已返回完整内容
+"zhihu.com", "www.zhihu.com",              // API 已返回完整内容
+"weibo.com", "www.weibo.com",              // API 已返回完整内容
+"bilibili.com", "www.bilibili.com",
 ]);
 
 const CONTENT_SELECTORS = [
