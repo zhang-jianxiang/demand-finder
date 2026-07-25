@@ -27,17 +27,17 @@ export const config = {
   TIKHUB_API_KEY: process.env.TIKHUB_API_KEY || "",
   TIKHUB_BASE_URL: process.env.TIKHUB_BASE_URL || "https://api.tikhub.io",
 
-  // ─── Reddit (生活/工作类 Subreddit) ───
-  REDDIT_SUBREDDITS: process.env.REDDIT_SUBREDDITS || "LifeProTips,productivity,BuyItForLife,smallbusiness,Entrepreneur,finance,home,Parenting,Cooking,DIY",
+  // ─── Reddit (聚焦软件/工具类 Subreddit) ───
+  REDDIT_SUBREDDITS: process.env.REDDIT_SUBREDDITS || "selfhosted,software,apps,productivity,webdev,programming,freesoftware,opensource,macapps,androidapps",
 
-  // ─── 知乎 ───
-  ZHIHU_KEYWORDS: process.env.ZHIHU_KEYWORDS || "有没有好用的,求推荐,太麻烦了,怎么办,有没有什么办法,吐槽,踩坑,后悔买,智商税,不值得",
+  // ─── 知乎 (聚焦软件/工具需求) ───
+  ZHIHU_KEYWORDS: process.env.ZHIHU_KEYWORDS || "有没有好用的App,求推荐软件,有没有什么工具,免费替代,太贵了有没有替代,效率工具推荐,有没有开源的,好用的插件推荐",
 
-  // ─── 小红书 ───
-  XHS_KEYWORDS: process.env.XHS_KEYWORDS || "好物推荐,避雷,踩雷,后悔,有没有,求推荐,太难了,怎么办,推荐一下,种草,拔草",
+  // ─── 小红书 (聚焦软件/工具需求) ───
+  XHS_KEYWORDS: process.env.XHS_KEYWORDS || "好用的App推荐,效率工具分享,免费软件推荐,App避雷,软件踩坑,有没有好用的App,替代软件推荐,宝藏App,工具推荐,学生党App",
 
-  // ─── 微博 ───
-  WEIBO_KEYWORDS: process.env.WEIBO_KEYWORDS || "求助,推荐,吐槽,太难了,有没有,怎么办,买什么,哪个好",
+  // ─── 微博 (聚焦软件/工具需求) ───
+  WEIBO_KEYWORDS: process.env.WEIBO_KEYWORDS || "App推荐,工具推荐,效率软件,免费工具,软件避雷,有没有好用的App",
 
   // ─── 通用 ───
   LOG_LEVEL: process.env.LOG_LEVEL || "INFO",
@@ -48,30 +48,30 @@ export const config = {
   },
   get zhihuKeywordList() {
     return parseList(this.ZHIHU_KEYWORDS, [
-      "有没有好用的", "求推荐", "太麻烦了", "怎么办",
-      "有没有什么办法", "吐槽", "踩坑", "后悔买", "智商税", "不值得",
+      "有没有好用的App", "求推荐软件", "有没有什么工具", "免费替代",
+      "太贵了有没有替代", "效率工具推荐", "有没有开源的", "好用的插件推荐",
     ]);
   },
   get xhsKeywordList() {
     return parseList(this.XHS_KEYWORDS, [
-      "好物推荐", "避雷", "踩雷", "后悔", "有没有",
-      "求推荐", "太难了", "怎么办", "种草", "拔草",
+      "好用的App推荐", "效率工具分享", "免费软件推荐", "App避雷",
+      "软件踩坑", "有没有好用的App", "替代软件推荐", "宝藏App", "工具推荐", "学生党App",
     ]);
   },
   get weiboKeywordList() {
     return parseList(this.WEIBO_KEYWORDS, [
-      "求助", "推荐", "吐槽", "太难了", "有没有", "怎么办",
+      "App推荐", "工具推荐", "效率软件", "免费工具", "软件避雷", "有没有好用的App",
     ]);
   },
   get hnKeywordList() {
     if (this.HN_SEARCH_KEYWORDS.trim()) {
       return parseList(this.HN_SEARCH_KEYWORDS, []);
     }
-    // 英文需求信号关键词（保留 HN 作为补充源）
+    // 英文需求信号关键词（聚焦软件/工具需求）
     return [
-      "looking for", "wish there was", "frustrated with",
-      "too expensive", "is there a tool", "any recommendation",
-      "struggling with", "cheaper alternative",
+      "looking for a tool", "wish there was an app", "alternative to",
+      "is there a tool", "open source alternative", "self-hosted",
+      "cheaper alternative", "any recommendation for", "switching from",
     ];
   },
 } as const;
