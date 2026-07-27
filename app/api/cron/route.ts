@@ -15,7 +15,6 @@
 import { prisma } from "@/lib/db";
 import { collectZhihu } from "@/lib/collectors/zhihu";
 import { collectXiaohongshu } from "@/lib/collectors/xiaohongshu";
-import { enrichPosts } from "@/lib/collectors/web-scraper";
 import { DemandCardExtractor, computeScores } from "@/lib/extractors/demand-card";
 import type { CollectedPost } from "@/lib/collectors/types";
 
@@ -26,11 +25,17 @@ export async function GET(request: Request) {
   const startTime = Date.now();
   console.log("[Cron] 定时任务开始执行");
 
+  const url = new URL(request.url);
+  const step = url.searchParams.get("step");
+  const doCollect = step !== "extract"; const doExtract = step !== "collect"; console.log("[Cron] step=" + (step || "all") + ", collect=" + doCollect + ", extract=" + doExtract);
+
+
   try {
     // ═══════════════════════════════════════
     // 第一步: 采集小红书 + 知乎
     // ═══════════════════════════════════════
     const results: { source: string; collected: number; saved: number }[] = [];
+    if (doCollect) {
 
     for (const { source, collector } of [
       { source: "xiaohongshu", collector: collectXiaohongshu },
@@ -38,12 +43,9 @@ export async function GET(request: Request) {
     ]) {
       try {
         console.log(`[Cron] 采集 ${source}...`);
-        const posts = await collector(10);
+        const posts = await collector(8);
 
         if (posts.length > 0) {
-          // 网页正文富化
-          await enrichPosts(posts);
-
           // 入库
           let savedCount = 0;
           for (const post of posts) {
@@ -104,12 +106,12 @@ export async function GET(request: Request) {
     let extracted = 0;
     let processed = 0;
 
-    try {
+    if (doExtract) try {
       console.log("[Cron] 开始 LLM 提取...");
 
       const rawPosts = await prisma.rawPost.findMany({
         where: { processedAt: null },
-        take: 5,
+        take: 3,
         orderBy: { score: "desc" },
       });
 
