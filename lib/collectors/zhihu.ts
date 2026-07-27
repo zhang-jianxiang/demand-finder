@@ -173,14 +173,14 @@ function extractPosts(data: any, limit: number): CollectedPost[] {
 }
 
 /** 主采集函数 */
-export async function collectZhihu(maxResults = 30): Promise<CollectedPost[]> {
+export async function collectZhihu(maxResults = 30, maxKeywords = 5): Promise<CollectedPost[]> {
   if (!config.TIKHUB_API_KEY) {
     console.warn("[知乎] TikHub API Key 未配置，使用 Mock 数据");
     return collectMockData();
   }
 
   const allPosts: CollectedPost[] = [];
-  const keywords = config.zhihuKeywordList.slice(0, 5);
+  const keywords = config.zhihuKeywordList.slice(0, maxKeywords);
 
   // 搜索知乎文章 (fetch_article_search_v3)
   for (const keyword of keywords) {

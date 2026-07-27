@@ -43,7 +43,7 @@ export async function GET(request: Request) {
     for (const { source, collector } of platforms) {
       try {
         console.log(`[Cron] 采集 ${source}...`);
-        const posts = await collector(5);
+        const posts = await collector(5, 1);
 
         if (posts.length > 0) {
           // 入库
@@ -111,7 +111,7 @@ export async function GET(request: Request) {
 
       const rawPosts = await prisma.rawPost.findMany({
         where: { processedAt: null },
-        take: 2,
+        take: 1,
         orderBy: { score: "desc" },
       });
 

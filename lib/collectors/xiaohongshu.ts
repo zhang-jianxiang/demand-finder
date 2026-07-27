@@ -138,14 +138,14 @@ function extractNotes(data: any, limit: number): CollectedPost[] {
 }
 
 /** 主采集函数 */
-export async function collectXiaohongshu(maxResults = 30): Promise<CollectedPost[]> {
+export async function collectXiaohongshu(maxResults = 30, maxKeywords = 5): Promise<CollectedPost[]> {
   if (!config.TIKHUB_API_KEY) {
     console.warn("[小红书] TikHub API Key 未配置，使用 Mock 数据");
     return collectMockData();
   }
 
   const allPosts: CollectedPost[] = [];
-  const keywords = config.xhsKeywordList.slice(0, 5);
+  const keywords = config.xhsKeywordList.slice(0, maxKeywords);
 
   for (const keyword of keywords) {
     try {
