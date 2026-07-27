@@ -16,7 +16,7 @@ export const config = {
   LLM_PROVIDER: process.env.LLM_PROVIDER || "deepseek",
   LLM_API_KEY: process.env.LLM_API_KEY || "",
   LLM_BASE_URL: process.env.LLM_BASE_URL || "https://api.deepseek.com/v1",
-  LLM_MODEL: process.env.LLM_MODEL || "deepseek-v4-flash",
+  LLM_MODEL: process.env.LLM_MODEL || "deepseek-chat",
 
   // ─── HackerNews (保留，英文技术需求) ───
   HN_ALGOLIA_URL: process.env.HN_ALGOLIA_URL || "https://hn.algolia.com/api/v1",

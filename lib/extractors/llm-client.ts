@@ -8,7 +8,7 @@ import OpenAI from "openai";
 import { config } from "@/lib/config";
 
 const PROVIDER_PRESETS: Record<string, { baseUrl: string; model: string }> = {
-  deepseek: { baseUrl: "https://api.deepseek.com/v1", model: "deepseek-v4-flash" },
+  deepseek: { baseUrl: "https://api.deepseek.com/v1", model: "deepseek-chat" },
   qwen: { baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1", model: "qwen-plus" },
   openai: { baseUrl: "https://api.openai.com/v1", model: "gpt-4o-mini" },
 };
@@ -29,7 +29,7 @@ export class LLMClient {
       throw new Error(`LLM API key not configured. Set LLM_API_KEY in .env for provider '${provider}'.`);
     }
 
-    this.client = new OpenAI({ apiKey, baseURL: baseUrl });
+    this.client = new OpenAI({ apiKey, baseURL: baseUrl, timeout: 30000, maxRetries: 1 });
     console.log(`[LLM] Initialized: provider=${provider}, model=${this.model}`);
   }
 
