@@ -27,7 +27,7 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const step = url.searchParams.get("step");
-  const doCollect = step !== "extract"; const doExtract = step !== "collect"; console.log("[Cron] step=" + (step || "all") + ", collect=" + doCollect + ", extract=" + doExtract);
+  const doCollect = step !== "extract"; const doExtract = step !== "collect"; const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000); const useXhs = dayOfYear % 2 === 0; console.log("[Cron] step=" + (step || "all") + ", collect=" + doCollect + ", extract=" + doExtract);
 
 
   try {
@@ -37,13 +37,13 @@ export async function GET(request: Request) {
     const results: { source: string; collected: number; saved: number }[] = [];
     if (doCollect) {
 
-    for (const { source, collector } of [
-      { source: "xiaohongshu", collector: collectXiaohongshu },
-      { source: "zhihu", collector: collectZhihu },
-    ]) {
+    const platforms = useXhs
+      ? [{ source: "xiaohongshu", collector: collectXiaohongshu }]
+      : [{ source: "zhihu", collector: collectZhihu }];
+    for (const { source, collector } of platforms) {
       try {
         console.log(`[Cron] 采集 ${source}...`);
-        const posts = await collector(8);
+        const posts = await collector(5);
 
         if (posts.length > 0) {
           // 入库
@@ -111,7 +111,7 @@ export async function GET(request: Request) {
 
       const rawPosts = await prisma.rawPost.findMany({
         where: { processedAt: null },
-        take: 3,
+        take: 2,
         orderBy: { score: "desc" },
       });
 

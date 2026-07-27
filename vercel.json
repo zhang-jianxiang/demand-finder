@@ -1,1 +1,1 @@
-{"crons":[{"path":"/api/cron?step=collect","schedule":"0 0 * * *"},{"path":"/api/cron?step=extract","schedule":"30 0 * * *"}]}
+{"crons":[{"path":"/api/cron","schedule":"0 0 * * *}"}]}
