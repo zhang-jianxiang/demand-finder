@@ -99,6 +99,7 @@ export async function GET(request: Request) {
         results.push({ source, collected: 0, saved: 0 });
       }
     }
+    } // end doCollect
 
     // ═══════════════════════════════════════
     // 第二步: LLM 提取需求卡片
