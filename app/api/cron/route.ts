@@ -1,13 +1,12 @@
-/**
+﻿/**
  * Cron 定时任务 API — 每天 1 次自动采集 + 提取
  *
  * 流程:
- *   1. 采集小红书数据 (20 条)
- *   2. 采集知乎数据 (20 条)
- *   3. LLM 提取需求卡片 (最多 10 条)
+ *   1. 采集小红书/知乎数据 (15 条, 3 个关键词)
+ *   2. LLM 提取需求卡片 (最多 5 条)
  *
  * Vercel Cron 会发送 GET 请求
- * 配置在 vercel.json 中: schedule "0 8 * * *" (每天早上 8 点)
+ * 配置在 vercel.json 中: schedule "0 0 * * *" (每天 UTC 0 点)
  *
  * 也可手动调用: GET /api/cron
  */
@@ -27,7 +26,11 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const step = url.searchParams.get("step");
-  const doCollect = step !== "extract"; const doExtract = step !== "collect"; const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000); const useXhs = dayOfYear % 2 === 0; console.log("[Cron] step=" + (step || "all") + ", collect=" + doCollect + ", extract=" + doExtract);
+  const doCollect = step !== "extract";
+  const doExtract = step !== "collect";
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+  const useXhs = dayOfYear % 2 === 0;
+  console.log(`[Cron] step=${step || "all"}, collect=${doCollect}, extract=${doExtract}, platform=${useXhs ? "xiaohongshu" : "zhihu"}`);
 
 
   try {
@@ -43,7 +46,7 @@ export async function GET(request: Request) {
     for (const { source, collector } of platforms) {
       try {
         console.log(`[Cron] 采集 ${source}...`);
-        const posts = await collector(5, 1);
+        const posts = await collector(15, 3);
 
         if (posts.length > 0) {
           // 入库
@@ -107,12 +110,13 @@ export async function GET(request: Request) {
     let extracted = 0;
     let processed = 0;
 
-    if (doExtract) try {
+    if (doExtract) {
+    try {
       console.log("[Cron] 开始 LLM 提取...");
 
       const rawPosts = await prisma.rawPost.findMany({
         where: { processedAt: null },
-        take: 1,
+        take: 5,
         orderBy: { score: "desc" },
       });
 
@@ -178,6 +182,7 @@ export async function GET(request: Request) {
     } catch (err: any) {
       console.error("[Cron] LLM 提取失败:", err.message);
     }
+    } // end doExtract
 
     // ═══════════════════════════════════════
     // 返回汇总
