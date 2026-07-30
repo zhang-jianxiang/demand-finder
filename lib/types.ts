@@ -11,7 +11,8 @@ export type DataSource =
   | "xiaohongshu"
   | "weibo"
   | "douyin"
-  | "bilibili";
+  | "bilibili"
+  | "twitter";
 
 /** 证据类型 */
 export type EvidenceType = "complaint" | "help_seeking" | "missing" | "comparison";
@@ -87,6 +88,7 @@ export const SOURCE_LABELS: Record<DataSource, string> = {
   weibo: "微博",
   douyin: "抖音",
   bilibili: "B站",
+  twitter: "X/Twitter",
 };
 
 /** 数据源颜色映射 */
@@ -99,6 +101,7 @@ export const SOURCE_COLORS: Record<DataSource, string> = {
   weibo: "bg-red-100 text-red-700",
   douyin: "bg-slate-100 text-slate-700",
   bilibili: "bg-pink-100 text-pink-700",
+  twitter: "bg-slate-100 text-slate-800",
 };
 
 /** 需求强度颜色 */

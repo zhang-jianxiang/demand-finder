@@ -13,6 +13,7 @@ import { collectHackerNews } from "@/lib/collectors/hackernews";
 import { collectReddit } from "@/lib/collectors/reddit";
 import { collectZhihu } from "@/lib/collectors/zhihu";
 import { collectXiaohongshu } from "@/lib/collectors/xiaohongshu";
+import { collectTwitter } from "@/lib/collectors/twitter";
 import { enrichPosts } from "@/lib/collectors/web-scraper";
 import type { CollectedPost } from "@/lib/collectors/types";
 
@@ -39,6 +40,9 @@ async function runCollect(source: string, maxResults: number) {
       break;
     case "hackernews":
       posts = await collectHackerNews(maxResults);
+      break;
+    case "twitter":
+      posts = await collectTwitter(maxResults);
       break;
     default:
       return { error: `Unknown source: ${source}`, status: 400 };

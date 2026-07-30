@@ -10,7 +10,8 @@ export type DataSourceType =
   | "xiaohongshu"
   | "weibo"
   | "douyin"
-  | "bilibili";
+  | "bilibili"
+  | "twitter";
 
 export interface CollectedPost {
   source: DataSourceType;

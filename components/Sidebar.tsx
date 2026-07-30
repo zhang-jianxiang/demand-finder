@@ -16,6 +16,7 @@ const sourceItems = [
   { label: "微博", color: "bg-red-400" },
   { label: "Reddit", color: "bg-orange-400" },
   { label: "HackerNews", color: "bg-amber-400" },
+  { label: "X/Twitter", color: "bg-slate-400" },
 ];
 
 export default function Sidebar() {

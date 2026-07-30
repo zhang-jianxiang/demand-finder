@@ -39,6 +39,9 @@ export const config = {
   // ─── 微博 (聚焦软件/工具需求) ───
   WEIBO_KEYWORDS: process.env.WEIBO_KEYWORDS || "App推荐,工具推荐,效率软件,免费工具,软件避雷,有没有好用的App",
 
+  // ─── X/Twitter (英文需求信号，聚焦软件/工具/创业) ───
+  TWITTER_KEYWORDS: process.env.TWITTER_KEYWORDS || "looking for an app,wish there was an app,is there a tool for,need a tool,alternative to,cheaper alternative,app recommendation,startup idea,pain point,frustrated with",
+
   // ─── 通用 ───
   LOG_LEVEL: process.env.LOG_LEVEL || "INFO",
 
@@ -61,6 +64,13 @@ export const config = {
   get weiboKeywordList() {
     return parseList(this.WEIBO_KEYWORDS, [
       "App推荐", "工具推荐", "效率软件", "免费工具", "软件避雷", "有没有好用的App",
+    ]);
+  },
+  get twitterKeywordList() {
+    return parseList(this.TWITTER_KEYWORDS, [
+      "looking for an app", "wish there was an app", "is there a tool for",
+      "need a tool", "alternative to", "cheaper alternative",
+      "app recommendation", "startup idea", "pain point", "frustrated with",
     ]);
   },
   get hnKeywordList() {

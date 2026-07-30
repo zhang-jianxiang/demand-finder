@@ -14,6 +14,7 @@
 import { prisma } from "@/lib/db";
 import { collectZhihu } from "@/lib/collectors/zhihu";
 import { collectXiaohongshu } from "@/lib/collectors/xiaohongshu";
+import { collectTwitter } from "@/lib/collectors/twitter";
 import { DemandCardExtractor, computeScores } from "@/lib/extractors/demand-card";
 import type { CollectedPost } from "@/lib/collectors/types";
 
@@ -29,20 +30,24 @@ export async function GET(request: Request) {
   const doCollect = step !== "extract";
   const doExtract = step !== "collect";
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-  const useXhs = dayOfYear % 2 === 0;
-  console.log(`[Cron] step=${step || "all"}, collect=${doCollect}, extract=${doExtract}, platform=${useXhs ? "xiaohongshu" : "zhihu"}`);
+  // 每日轮换平台: 0=xiaohongshu, 1=zhihu, 2=twitter
+  const platformIndex = dayOfYear % 3;
+  const platformName = platformIndex === 0 ? "xiaohongshu" : platformIndex === 1 ? "zhihu" : "twitter";
+  console.log(`[Cron] step=${step || "all"}, collect=${doCollect}, extract=${doExtract}, platform=${platformName}`);
 
 
   try {
     // ═══════════════════════════════════════
-    // 第一步: 采集小红书 + 知乎
+    // 第一步: 采集 (轮换: 小红书 / 知乎 / Twitter)
     // ═══════════════════════════════════════
     const results: { source: string; collected: number; saved: number }[] = [];
     if (doCollect) {
 
-    const platforms = useXhs
+    const platforms = platformIndex === 0
       ? [{ source: "xiaohongshu", collector: collectXiaohongshu }]
-      : [{ source: "zhihu", collector: collectZhihu }];
+      : platformIndex === 1
+      ? [{ source: "zhihu", collector: collectZhihu }]
+      : [{ source: "twitter", collector: collectTwitter }];
     for (const { source, collector } of platforms) {
       try {
         console.log(`[Cron] 采集 ${source}...`);

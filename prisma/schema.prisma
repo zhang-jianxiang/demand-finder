@@ -21,6 +21,7 @@ enum DataSource {
   weibo
   douyin
   bilibili
+  twitter
 }
 
 // 证据类型枚举
